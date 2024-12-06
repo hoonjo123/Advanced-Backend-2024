@@ -48,18 +48,13 @@
                                 <option value="uname" th:selected="${field == 'uname'}">이름</option>
                                 <option value="email" th:selected="${field == 'email'}">이메일</option>
                                 <option value="role" th:selected="${field == 'role'}">역할</option>
+                                <option value="provider" th:selected="${field == 'provider'}">provider</option>
+
                             </select>
                         </td>
                         <td style="width: 24%">
-                <span th:unless="${query}">
-									<input class="form-control" type="text" id="query" placeholder="검색할 내용" onkeydown="handleEnter(event)">
-								</span>
-                            <span th:if="${query}">
-									<input class="form-control" type="text" id="query" th:value="${query}" onkeydown="handleEnter(event)">
-								</span>
                         </td>
                         <td style="width: 8%">
-                            <button class="btn btn-outline-primary" onclick="search()">검색</button>
                         </td>
                     </tr>
                 </table>
@@ -68,15 +63,20 @@
 
                 <table class="table">
                     <tr>
-                        <th style="width: 15%">프로필</th>
-                        <th style="width: 25%">아이디</th>
-                        <th style="width: 20%">이름</th>
-                        <th style="width: 20%">이메일</th>
-                        <th style="width: 20%">역할</th>
+                        <th style="width: 8%">프로필</th>
+                        <th style="width: 20%">아이디</th>
+                        <th style="width: 14%">이름</th>
+                        <th style="width: 16%">이메일</th>
+                        <th style="width: 10%">역할</th>
+                        <th style="width: 10%">Provider</th>
                     </tr>
                     <tr th:each="user: ${userList}">
                         <td style="text-align: center;">
-                            <img th:src="${user.profileUrl}" height="54" alt="프로필 이미지">
+                            <div style="width: 54px; height: 54px; border-radius: 50%; overflow: hidden; display: inline-block;">
+                                <img th:src="${user.profileUrl != null && user.profileUrl != '' ? user.profileUrl : '/img/user-basic-image.jpeg'}"
+                                     alt="프로필 이미지"
+                                     style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
                         </td>
                         <td>
                             <a th:href="@{/user/detail/{uid}(uid=${user.uid})}">
@@ -86,6 +86,7 @@
                         <td th:text="${user.uname}">홍길동</td>
                         <td th:text="${user.email}">example@domain.com</td>
                         <td th:text="${user.role}">관리자</td>
+                        <td th:text="${user.provider}">Local</td>
                     </tr>
                 </table>
 
