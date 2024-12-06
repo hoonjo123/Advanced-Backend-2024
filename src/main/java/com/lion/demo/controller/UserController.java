@@ -58,6 +58,7 @@ public class UserController {
             model.addAttribute("field", field);
             model.addAttribute("query", query);
         }
+
         return "user/list";
     }
 
