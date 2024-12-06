@@ -5,16 +5,15 @@ import com.lion.demo.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -44,11 +43,25 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String list(Model model) {
-        List<User> userList = userService.getUsers();
-        model.addAttribute("userList", userList);
+    public String list(@RequestParam(name = "f", defaultValue = "uid") String field,
+                       @RequestParam(name = "q", defaultValue = "") String query,
+                       HttpSession session, Model model) {
+
+        // 검색 조건에 따른 사용자 목록 가져오기
+        List<User> userList;
+        if (query.isEmpty()) {
+            userList = userService.getUsers(); // 전체 사용자 가져오기
+
+            // 세션 및 모델에 데이터 추가
+            session.setAttribute("menu", "user");
+            model.addAttribute("userList", userList);
+            model.addAttribute("field", field);
+            model.addAttribute("query", query);
+        }
         return "user/list";
     }
+
+
 
     @GetMapping("/delete/{uid}")
     public String delete(@PathVariable String uid) {
@@ -114,7 +127,7 @@ public class UserController {
         session.setAttribute("sessUid", uid);
         session.setAttribute("sessUname", user.getUname());
         String msg = user.getUname() + "님 환영합니다.";
-        String url = "/mall/list";
+        String url = "/book/list";
         model.addAttribute("msg", msg);
         model.addAttribute("url", url);
         return "common/alertMsg";
